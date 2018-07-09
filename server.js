@@ -5,18 +5,46 @@ var express = require('express');
 // Nous définissons ici les paramètres du serveur.
 var hostname = 'localhost'; 
 var port = 3000; 
+
+ 
+// Database Name
+// La variable mongoose nous permettra d'utiliser les fonctionnalités du module mongoose.
+var mongoose = require('mongoose'); 
+// Ces options sont recommandées par mLab pour une connexion à la base
+
+ 
+//URL de notre base
+var urlmongo = 'mongodb://localhost:27017/'; 
+ 
+// Nous connectons l'API à notre base de données
+mongoose.connect(urlmongo);
+ 
+var db = mongoose.connection; 
+db.on('error', console.error.bind(console, 'Erreur lors de la connexion')); 
+db.once('open', function (){
+    console.log("Connexion à la base OK"); 
  
 var app = express(); 
 
 var bodyParser = require("body-parser"); 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+}); 
 
 
 //Afin de faciliter le routage (les URL que nous souhaitons prendre en charge dans notre API), nous créons un objet Router.
 //C'est à partir de cet objet myRouter, que nous allons implémenter les méthodes. 
 var myRouter = express.Router(); 
  
+var pilotesSchema = mongoose.Schema({
+  prenom: String, 
+  nom: String, 
+  marque: String, 
+  description: String   
+});
+
+var Pilote = mongoose.model('Pilote', pilotesSchema);
+
 // Je vous rappelle notre route (/pilotes).  
 myRouter.route('/pilotes')
 
@@ -24,11 +52,15 @@ myRouter.route('/pilotes')
 // J'implémente les méthodes GET, PUT, UPDATE et DELETE
 // GET
 .get(function(req,res){ 
-    res.json({message : "Liste tous les pilotes",
-    marque : req.query.marque,
-    nbResultat : req.query.maxresultat, 
-    methode : req.method});
-})
+  // Utilisation de notre schéma Piscine pour interrogation de la base
+  Pilote.find(function(err, pilotes){
+          if (err){
+              res.send(err); 
+          }
+          res.json(pilotes); 
+          
+      }); 
+  }) // 
 //POST
 .post(function(req,res){
       res.json({message : "Ajouter un nouveau pilote",
