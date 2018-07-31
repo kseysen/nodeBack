@@ -208,6 +208,4 @@ myRouter.route('/images/:image_id')
 
 
 app.use(myRouter);   
-app.listen(port, hostname, function(){
-	console.log("Mon serveur fonctionne sur https://"+ hostname +":"+port); 
-});
+app.listen(PORT, () => console.log(`Listening on ${ PORT }`));
