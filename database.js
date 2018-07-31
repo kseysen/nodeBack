@@ -1,8 +1,8 @@
 var express = require('express');
 var hostname = 'localhost'; 
-var port = 3000; 
+const port = process.env.PORT || 3000;
 var mongoose = require('mongoose'); 
-var options = { server: { socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 } }, 
+var options = {  useNewUrlParser: true , server: { socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 } }, 
 replset: { socketOptions: { keepAlive: 300000, connectTimeoutMS : 30000 } } };
 var conf = require("./config.json");
 var urlmongo = `mongodb://${conf.user}:${conf.mdp}@ds247439.mlab.com:47439/setuprcdb`; 
@@ -209,5 +209,5 @@ myRouter.route('/images/:image_id')
 
 app.use(myRouter);   
 app.listen(port, hostname, function(){
-	console.log("Mon serveur fonctionne sur http://"+ hostname +":"+port); 
+	console.log("Mon serveur fonctionne sur https://"+ hostname +":"+port); 
 });
