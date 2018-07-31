@@ -1,6 +1,6 @@
 var express = require('express');
 var hostname = 'localhost'; 
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 var mongoose = require('mongoose'); 
 var options = {  useNewUrlParser: true , server: { socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 } }, 
 replset: { socketOptions: { keepAlive: 300000, connectTimeoutMS : 30000 } } };
