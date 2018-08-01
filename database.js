@@ -52,10 +52,12 @@ var setupSchema = mongoose.Schema({
     piste:String
 });
 
+//IMAGE SCHEMA
 var imageSchema = new mongoose.Schema({
     filename: String,
     originalName: String,
     desc: String,
+    piloteId: String,
     created: { type: Date, default: Date.now }
 });
 
@@ -186,7 +188,8 @@ myRouter.route('/images')
     var newImage = new Image();
     newImage.filename = req.file.filename;
     newImage.originalName = req.file.originalname;
-    newImage.desc = req.body.desc
+    newImage.desc = req.body.desc;
+    newImage.piloteId = req.body.piloteId;
     newImage.save(function(err){
       if(err){
         res.send(err);
