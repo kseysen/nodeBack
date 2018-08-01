@@ -194,7 +194,7 @@ myRouter.route('/images')
       if(err){
         res.send(err);
       }
-      res.json({message : 'new Image'});
+      res.json({message : 'new Image'}).send({ newImage });
     }); 
 }); 
 
