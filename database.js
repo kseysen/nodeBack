@@ -184,7 +184,7 @@ myRouter.route('/setups/:setups_id')
 
 // Upload a new image with description
 myRouter.route('/images')
-.post(upload.single('image'),function(req,res) {
+.post(function(req,res) {
     console.log('creation image');
     var newImage = new Image();
     newImage.filename = req.file.filename;
