@@ -183,7 +183,7 @@ myRouter.route('/setups/:setups_id')
 });
 
 // Upload a new image with description
-myRouter.route('/images')
+/*myRouter.route('/images')
 .post(function(req,res) {
     console.log('creation image');
     console.log(req);
@@ -198,7 +198,21 @@ myRouter.route('/images')
       }
       res.json({message : 'new Image'}).send({ newImage });
     }); 
-}); 
+}); */
+
+app.post('/images', upload.single('image'), (req, res, next) => {
+    // Create a new image model and fill the properties
+    let newImage = new Image();
+    newImage.filename = req.file.filename;
+    newImage.originalName = req.file.originalname;
+    newImage.desc = req.body.desc
+    newImage.save(err => {
+        if (err) {
+            return res.sendStatus(400);
+        }
+        res.status(201).send({ newImage });
+    });
+});
 
 myRouter.route('/images/:image_id')
 .get(function(req,res) {
