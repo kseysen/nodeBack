@@ -214,8 +214,8 @@ myRouter.route('/images')
     //newImage.originalName = req.file.originalname;
     //newImage.desc = req.body.desc
     console.log(req);
-    newImage.img.data = req.files.foo.data;
-    newImage.img.contentType = req.files.foo.mimetype;
+    newImage.img.data = req.data;
+    newImage.img.contentType = req.content-type;
     newImage.save(err => {
         if (err) {
             return res.sendStatus(400);
