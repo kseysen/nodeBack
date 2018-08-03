@@ -2,6 +2,7 @@ var express = require('express');
 var multer = require('multer');
 var hostname = 'localhost'; 
 const PORT = process.env.PORT || 3000;
+const fileUpload = require('express-fileupload');
 let UPLOAD_PATH = 'uploads'
 
 var mongoose = require('mongoose'); 
@@ -18,6 +19,10 @@ var storage = multer.diskStorage({
     filename: function (req, file, cb) {
         cb(null, file.fieldname + '-' + Date.now())
     }
+})
+
+fileUpload({
+    limits: { fileSize: 50 * 1024 * 1024 },
 })
 
 var upload = multer({ storage: storage })
@@ -201,7 +206,8 @@ myRouter.route('/setups/:setups_id')
     }); 
 });
 
-app.post('/images', (req, res) => {
+myRouter.route('/images')
+.post(function(req,res) {
     // Create a new image model and fill the properties
     let newImage = new Image();
     //newImage.filename = req.file.filename;
