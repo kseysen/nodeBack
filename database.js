@@ -1,12 +1,26 @@
 var express = require('express');
+var multer = require('multer');
 var hostname = 'localhost'; 
 const PORT = process.env.PORT || 3000;
+let UPLOAD_PATH = 'uploads'
+
 var mongoose = require('mongoose'); 
 var options = {  useNewUrlParser: true , server: { socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 } }, 
 replset: { socketOptions: { keepAlive: 300000, connectTimeoutMS : 30000 } } };
 var conf = require("./config.json");
 var urlmongo = `mongodb://${conf.user}:${conf.mdp}@ds247439.mlab.com:47439/setuprcdb`; 
 
+// Multer Settings for file upload
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, UPLOAD_PATH)
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.fieldname + '-' + Date.now())
+    }
+})
+
+var upload = multer({ storage: storage })
 
 mongoose.connect(urlmongo, options);
 
@@ -42,7 +56,6 @@ var piloteSchema = mongoose.Schema({
 var surfaceSchema = mongoose.Schema({
     name: String
 });
-
 
 // SETUP SCHEMA
 var setupSchema = mongoose.Schema({
@@ -200,7 +213,7 @@ myRouter.route('/setups/:setups_id')
     }); 
 }); */
 
-app.post('/images', upload.single('image'), (req, res, next) => {
+app.post('/images', (req, res, next) => {
     // Create a new image model and fill the properties
     let newImage = new Image();
     newImage.filename = req.file.filename;
