@@ -213,10 +213,10 @@ myRouter.route('/setups/:setups_id')
     }); 
 }); */
 
-app.post('/images', (req, res, next) => {
+app.post('/images', upload.single('image'), (req, res, next) => {
     // Create a new image model and fill the properties
     let newImage = new Image();
-    newImage.filename = req.file.filename;
+    //newImage.filename = req.file.filename;
     newImage.originalName = req.file.originalname;
     newImage.desc = req.body.desc
     newImage.save(err => {
