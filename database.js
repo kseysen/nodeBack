@@ -74,12 +74,12 @@ var setupSchema = mongoose.Schema({
     created: { type: Date, default: Date.now }
 });*/
 
-var Imagechema = new Schema(
+var Imageschema = mongoose.Schema(
  { img:
      { data: Buffer, contentType: String }
  }
 );
-var Image = mongoose.model("Images", Imagechema);
+var Image = mongoose.model("Images", Imageschema);
 
 var Pilote = mongoose.model('Pilotes', piloteSchema); 
 var Surface = mongoose.model('Surfaces', surfaceSchema);
