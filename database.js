@@ -195,28 +195,12 @@ myRouter.route('/setups/:setups_id')
     }); 
 });
 
-// Upload a new image with description
-/*myRouter.route('/images')
-.post(function(req,res) {
-    console.log('creation image');
-    console.log(req);
-    var newImage = new Image();
-    newImage.filename = req.file.filename;
-    newImage.originalName = req.file.originalname;
-    newImage.desc = req.body.desc;
-    newImage.piloteId = req.body.piloteId;
-    newImage.save(function(err){
-      if(err){
-        res.send(err);
-      }
-      res.json({message : 'new Image'}).send({ newImage });
-    }); 
-}); */
-
 app.post('/images', upload.single('image'), (req, res, next) => {
     // Create a new image model and fill the properties
     let newImage = new Image();
     //newImage.filename = req.file.filename;
+    console.log(req.file);
+    console.log(res.body);
     newImage.originalName = req.file.originalname;
     newImage.desc = req.body.desc
     newImage.save(err => {
