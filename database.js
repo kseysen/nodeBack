@@ -66,19 +66,25 @@ var setupSchema = mongoose.Schema({
 });
 
 //IMAGE SCHEMA
-var imageSchema = new mongoose.Schema({
+/*var imageSchema = new mongoose.Schema({
     filename: String,
     originalName: String,
     desc: String,
     piloteId: String,
     created: { type: Date, default: Date.now }
-});
+});*/
 
+var Imagechema = new Schema(
+ { img:
+     { data: Buffer, contentType: String }
+ }
+);
+var Image = mongoose.model("Images", Imagechema);
 
 var Pilote = mongoose.model('Pilotes', piloteSchema); 
 var Surface = mongoose.model('Surfaces', surfaceSchema);
 var Setup = mongoose.model('Setups', setupSchema);
-var Image = mongoose.model('Image', imageSchema);
+//var Image = mongoose.model('Image', imageSchema);
 
 var myRouter = express.Router(); 
 
@@ -199,10 +205,11 @@ app.post('/images', (req, res) => {
     // Create a new image model and fill the properties
     let newImage = new Image();
     //newImage.filename = req.file.filename;
-    console.log(req.file);
-    console.log(res.body);
-    newImage.originalName = req.file.originalname;
-    newImage.desc = req.body.desc
+    //newImage.originalName = req.file.originalname;
+    //newImage.desc = req.body.desc
+    console.log(req.files);
+    newImage.img.data = req.files.foo.data;
+    newImage.img.contentType = req.files.foo.mimetype;
     newImage.save(err => {
         if (err) {
             return res.sendStatus(400);
