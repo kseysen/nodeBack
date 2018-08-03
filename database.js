@@ -195,7 +195,7 @@ myRouter.route('/setups/:setups_id')
     }); 
 });
 
-app.post('/images', upload.single('image'), (req, res, next) => {
+app.post('/images', (req, res) => {
     // Create a new image model and fill the properties
     let newImage = new Image();
     //newImage.filename = req.file.filename;
