@@ -213,7 +213,7 @@ myRouter.route('/images')
     //newImage.filename = req.file.filename;
     //newImage.originalName = req.file.originalname;
     //newImage.desc = req.body.desc
-    console.log(req.files);
+    console.log(req);
     newImage.img.data = req.files.foo.data;
     newImage.img.contentType = req.files.foo.mimetype;
     newImage.save(err => {
