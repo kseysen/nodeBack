@@ -186,6 +186,7 @@ myRouter.route('/setups/:setups_id')
 myRouter.route('/images')
 .post(function(req,res) {
     console.log('creation image');
+    console.log(req);
     var newImage = new Image();
     newImage.filename = req.file.filename;
     newImage.originalName = req.file.originalname;

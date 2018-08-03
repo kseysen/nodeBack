@@ -9,7 +9,7 @@
             "type": "chrome",
             "request": "launch",
             "name": "Lancer Chrome sur localhost",
-            "url": "http://localhost:3000",
+            "url": "https://radiant-anchorage-58124.herokuapp.com/",
             "webRoot": "${workspaceFolder}"
         }
     ]
