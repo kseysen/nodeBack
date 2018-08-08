@@ -75,7 +75,7 @@ var imageSchema = new mongoose.Schema({
     created: { type: Date, default: Date.now }
 });
 
-var Image = mongoose.model("Images", imageSchema);
+var Image = mongoose.model("Image", imageSchema);
 
 var Pilote = mongoose.model('Pilotes', piloteSchema); 
 var Surface = mongoose.model('Surfaces', surfaceSchema);
@@ -197,10 +197,10 @@ myRouter.route('/setups/:setups_id')
     }); 
 });
 
-myRouter.route('/images')
-.post(upload.single('file'), function(req,res, next) {
+
+app.post('/image', upload.single('image'), function(req,res, next) {
     // Create a new image model and fill the properties
-    let newImage = new Image();
+    var newImage = new Image();
     newImage.filename = req.file.filename;
     newImage.originalName = req.file.originalname;
     newImage.desc = req.body.desc
@@ -211,8 +211,6 @@ myRouter.route('/images')
         }
         res.status(201).send({ newImage });
     });
-    console.log("uploaded");
-    res.json({result:1});
 });
 
 myRouter.route('/images/:image_id')
