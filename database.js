@@ -3,7 +3,10 @@ var multer = require('multer');
 var hostname = 'localhost'; 
 var PORT = process.env.PORT || 3000;
 var cors = require('cors');
-let UPLOAD_PATH = 'uploads'
+var path = require('path');
+var fs = require('fs');
+var UPLOAD_PATH = 'uploads';
+
 
 var mongoose = require('mongoose'); 
 var options = {  useNewUrlParser: true , server: { socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 } }, 
@@ -31,6 +34,7 @@ db.once('open', function (){
     console.log("Connexion à la base OK"); 
 }); 
 var app = express(); 
+app.use(cors());
 var bodyParser = require("body-parser"); 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -48,7 +52,8 @@ var piloteSchema = mongoose.Schema({
     nom: String, 
     prenom: String, 
     marque: String, 
-    description: String   
+    description: String,
+    imageid: String
 }); 
 
 
@@ -69,19 +74,23 @@ var setupSchema = mongoose.Schema({
 //IMAGE SCHEMA
 var imageSchema = new mongoose.Schema({
     filename: String,
-    originalName: String,
+    originalname: String,
     desc: String,
     piloteId: String,
     created: { type: Date, default: Date.now }
 });
 
+var ItemSchema = new mongoose.Schema(
+    { img:
+        { data: Buffer, contentType: String }
+    }
+   );
+//var Image = mongoose.model("Image", ItemSchema);
 var Image = mongoose.model("Image", imageSchema);
 
 var Pilote = mongoose.model('Pilotes', piloteSchema); 
 var Surface = mongoose.model('Surfaces', surfaceSchema);
 var Setup = mongoose.model('Setups', setupSchema);
-//var Image = mongoose.model('Image', imageSchema);
-
 var myRouter = express.Router(); 
 
 myRouter.route('/')
@@ -120,6 +129,7 @@ myRouter.route('/pilotes/:pilotes_id')
             pilote.nom = req.body.nom;
             pilote.marque = req.body.marque;
             pilote.description = req.body.description;
+            //pilote.imageid = req.body.imageid; 
                 pilote.save(function(err) {
                     if(err){
                     res.send(err);
@@ -198,13 +208,12 @@ myRouter.route('/setups/:setups_id')
 });
 
 
-app.post('/image', upload.single('image'), function(req,res, next) {
-    // Create a new image model and fill the properties
+app.post('/images', upload.single('image'), (req, res, next) => {
     var newImage = new Image();
+    console.log(req.file);
     newImage.filename = req.file.filename;
-    newImage.originalName = req.file.originalname;
+    newImage.originalName = req.file.originalName;
     newImage.desc = req.body.desc
-    //newImage.img.data = req.data;
     newImage.save(err => {
         if (err) {
             return res.sendStatus(400);
@@ -213,15 +222,48 @@ app.post('/image', upload.single('image'), function(req,res, next) {
     });
 });
 
-myRouter.route('/images/:image_id')
+
+/*myRouter.route('/images/:image_id')
 .get(function(req,res) {
     console.log(req.params.image_id);
     Image.findById((req.params.image_id), function(err, image) {
         if (err){
             res.send(err);
         } 
-        res.json(image);
+        res.setHeader('Content-Type', 'image/jpeg');
+        fs.createReadStream(path.join(UPLOAD_PATH, image.filename)).pipe(res);
     }); 
+});*/
+
+app.get('/images', (req, res, next) => {
+    // use lean() to get a plain JS object
+    // remove the version key from the response
+    Image.find({}, '-__v').lean().exec((err, images) => {
+        if (err) {
+            res.sendStatus(400);
+        }
+ 
+        // Manually set the correct URL to each image
+        for (let i = 0; i < images.length; i++) {
+            var img = images[i];
+            img.url = req.protocol + '://' + req.get('host') + '/images/' + img._id;
+        }
+        res.json(images);
+    })
+});
+
+// Get one image by its ID
+app.get('/images/:id', (req, res, next) => {
+    let imgId = req.params.id;
+ 
+    Image.findById(imgId, (err, image) => {
+        if (err) {
+            res.sendStatus(400);
+        }
+        // stream the image back by loading the file
+        res.setHeader('Content-Type', 'image/jpeg');
+        fs.createReadStream(path.join(UPLOAD_PATH, image.filename)).pipe(res);
+    })
 });
 
 
