@@ -200,7 +200,7 @@ myRouter.route('/setups/:setups_id')
 myRouter.route('/images')
 .post(upload.single('file'), function(req,res, next) {
     // Create a new image model and fill the properties
-    /*let newImage = new Image();
+    let newImage = new Image();
     newImage.filename = req.file.filename;
     newImage.originalName = req.file.originalname;
     newImage.desc = req.body.desc
@@ -210,7 +210,7 @@ myRouter.route('/images')
             return res.sendStatus(400);
         }
         res.status(201).send({ newImage });
-    });*/
+    });
     console.log("uploaded");
     res.json({result:1});
 });
