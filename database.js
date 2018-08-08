@@ -1,8 +1,8 @@
 var express = require('express');
 var multer = require('multer');
 var hostname = 'localhost'; 
-const PORT = process.env.PORT || 3000;
-const fileUpload = require('express-fileupload');
+var PORT = process.env.PORT || 3000;
+var cors = require('cors');
 let UPLOAD_PATH = 'uploads'
 
 var mongoose = require('mongoose'); 
@@ -19,10 +19,6 @@ var storage = multer.diskStorage({
     filename: function (req, file, cb) {
         cb(null, file.fieldname + '-' + Date.now())
     }
-})
-
-fileUpload({
-    limits: { fileSize: 50 * 1024 * 1024 },
 })
 
 var upload = multer({ storage: storage })
@@ -71,20 +67,15 @@ var setupSchema = mongoose.Schema({
 });
 
 //IMAGE SCHEMA
-/*var imageSchema = new mongoose.Schema({
+var imageSchema = new mongoose.Schema({
     filename: String,
     originalName: String,
     desc: String,
     piloteId: String,
     created: { type: Date, default: Date.now }
-});*/
+});
 
-var Imageschema = mongoose.Schema(
- { img:
-     { data: Buffer, contentType: String }
- }
-);
-var Image = mongoose.model("Images", Imageschema);
+var Image = mongoose.model("Images", imageSchema);
 
 var Pilote = mongoose.model('Pilotes', piloteSchema); 
 var Surface = mongoose.model('Surfaces', surfaceSchema);
@@ -207,21 +198,21 @@ myRouter.route('/setups/:setups_id')
 });
 
 myRouter.route('/images')
-.post(function(req,res) {
+.post(upload.single('file'), function(req,res, next) {
     // Create a new image model and fill the properties
-    let newImage = new Image();
-    //newImage.filename = req.file.filename;
-    //newImage.originalName = req.file.originalname;
-    //newImage.desc = req.body.desc
-    console.log(req.data);
-    newImage.img.data = req.data;
-    newImage.img.contentType = req.content-type;
+    /*let newImage = new Image();
+    newImage.filename = req.file.filename;
+    newImage.originalName = req.file.originalname;
+    newImage.desc = req.body.desc
+    //newImage.img.data = req.data;
     newImage.save(err => {
         if (err) {
             return res.sendStatus(400);
         }
         res.status(201).send({ newImage });
-    });
+    });*/
+    console.log("uploaded");
+    res.json({result:1});
 });
 
 myRouter.route('/images/:image_id')
