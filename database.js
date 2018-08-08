@@ -212,7 +212,7 @@ app.post('/images', upload.single('image'), (req, res, next) => {
     var newImage = new Image();
     console.log(req.file);
     newImage.filename = req.file.filename;
-    newImage.originalName = req.file.originalName;
+    newImage.originalName = req.file.originalname;
     newImage.desc = req.body.desc
     newImage.save(err => {
         if (err) {
@@ -222,18 +222,6 @@ app.post('/images', upload.single('image'), (req, res, next) => {
     });
 });
 
-
-/*myRouter.route('/images/:image_id')
-.get(function(req,res) {
-    console.log(req.params.image_id);
-    Image.findById((req.params.image_id), function(err, image) {
-        if (err){
-            res.send(err);
-        } 
-        res.setHeader('Content-Type', 'image/jpeg');
-        fs.createReadStream(path.join(UPLOAD_PATH, image.filename)).pipe(res);
-    }); 
-});*/
 
 app.get('/images', (req, res, next) => {
     // use lean() to get a plain JS object
