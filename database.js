@@ -129,7 +129,7 @@ myRouter.route('/pilotes/:pilotes_id')
             pilote.nom = req.body.nom;
             pilote.marque = req.body.marque;
             pilote.description = req.body.description;
-            //pilote.imageid = req.body.imageid; 
+            pilote.imageid = req.body.imageid; 
                 pilote.save(function(err) {
                     if(err){
                     res.send(err);
@@ -139,7 +139,6 @@ myRouter.route('/pilotes/:pilotes_id')
             
     });
 });
-
 
 
 myRouter.route('/surfaces')
@@ -213,11 +212,13 @@ app.post('/images', upload.single('image'), (req, res, next) => {
     console.log(req.file);
     newImage.filename = req.file.filename;
     newImage.originalName = req.file.originalname;
-    newImage.desc = req.body.desc
+    newImage.desc = req.body.desc;
     newImage.save(err => {
         if (err) {
             return res.sendStatus(400);
         }
+        console.log(newImage);
+        console.log(res);
         res.status(201).send({ newImage });
     });
 });
@@ -253,7 +254,6 @@ app.get('/images/:id', (req, res, next) => {
         fs.createReadStream(path.join(UPLOAD_PATH, image.filename)).pipe(res);
     })
 });
-
 
 app.use(myRouter);   
 app.listen(PORT, () => console.log(`Listening on ${ PORT }`));
