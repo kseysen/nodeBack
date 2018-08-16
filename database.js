@@ -208,16 +208,14 @@ myRouter.route('/setups/:setups_id')
 
 
 app.post('/images', upload.single('image'), (req, res, next) => {
+    console.log("path de l'upload",UPLOAD_PATH);
     var newImage = new Image();
-    console.log(req.file);
     newImage.filename = req.file.filename;
     newImage.originalName = req.file.originalname;
     newImage.save(err => {
         if (err) {
             return res.sendStatus(400);
         }
-        console.log(newImage);
-        console.log(res);
         res.status(201).send({ newImage });
     });
 });
