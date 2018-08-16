@@ -212,7 +212,6 @@ app.post('/images', upload.single('image'), (req, res, next) => {
     console.log(req.file);
     newImage.filename = req.file.filename;
     newImage.originalName = req.file.originalname;
-    newImage.desc = req.body.desc;
     newImage.save(err => {
         if (err) {
             return res.sendStatus(400);
