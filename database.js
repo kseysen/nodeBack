@@ -5,8 +5,8 @@ var PORT = process.env.PORT || 3000;
 var cors = require('cors');
 var path = require('path');
 var fs = require('fs');
-var UPLOAD_PATH = 'uploads';
-
+//var UPLOAD_PATH = 'uploads';
+var UPLOAD_PATH= path.join(__dirname, 'uploads')
 
 var mongoose = require('mongoose'); 
 var options = {  useNewUrlParser: true , server: { socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 } }, 
