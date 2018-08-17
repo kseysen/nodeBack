@@ -53,7 +53,7 @@ var piloteSchema = mongoose.Schema({
     prenom: String, 
     marque: String, 
     description: String,
-    imageid: String
+    imageId: String
 }); 
 
 
@@ -129,7 +129,7 @@ myRouter.route('/pilotes/:pilotes_id')
             pilote.nom = req.body.nom;
             pilote.marque = req.body.marque;
             pilote.description = req.body.description;
-            pilote.imageid = req.body.imageid; 
+            pilote.imageId = req.body.imageId; 
                 pilote.save(function(err) {
                     if(err){
                     res.send(err);
