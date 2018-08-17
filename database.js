@@ -216,7 +216,7 @@ app.post('/images', upload.single('image'), (req, res, next) => {
         if (err) {
             return res.sendStatus(400);
         }
-        res.status(201).send( newImage.id);
+        res.status(201).send( newImage.id); 
     });
 });
 
