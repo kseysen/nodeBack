@@ -238,6 +238,23 @@ app.get('/images', (req, res, next) => {
     })
 });
 
+app.get('/lastimage', (req, res, next) => {
+    // use lean() to get a plain JS object
+    // remove the version key from the response
+    Image.find({}, '-__v').lean().exec((err, images) => {
+        if (err) {
+            res.sendStatus(400);
+        }
+ 
+        // Manually set the correct URL to each image
+        for (let i = 0; i < images.length; i++) {
+            var img = images[i];
+            img.url = req.protocol + '://' + req.get('host') + '/images/' + img._id;
+        }
+        res.json(img);
+    })
+});
+
 // Get one image by its ID
 app.get('/images/:id', (req, res, next) => {
     let imgId = req.params.id;
@@ -247,7 +264,8 @@ app.get('/images/:id', (req, res, next) => {
             res.sendStatus(400);
         }
         // stream the image back by loading the file
-        res.setHeader('Content-Type', 'image/jpeg');
+        res.setHeader('Content-Type', 'image/jpeg');   
+        res.set     
         fs.createReadStream(path.join(UPLOAD_PATH, image.filename)).pipe(res);
     })
 });
