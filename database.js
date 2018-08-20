@@ -87,15 +87,15 @@ var ItemSchema = new mongoose.Schema(
    );
 //var Image = mongoose.model("Image", ItemSchema);
 var Image = mongoose.model("Image", imageSchema);
-
 var Pilote = mongoose.model('Pilotes', piloteSchema); 
 var Surface = mongoose.model('Surfaces', surfaceSchema);
 var Setup = mongoose.model('Setups', setupSchema);
+
 var myRouter = express.Router(); 
 
 myRouter.route('/')
 .all(function(req,res){ 
-      res.json({message : "Bienvenue sur notre Pilote API ", methode : req.method});
+      res.json({message : "Bienvenue sur notre RCSetup API ", methode : req.method});
 });
   
 myRouter.route('/pilotes')
