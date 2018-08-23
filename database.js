@@ -1,17 +1,29 @@
 var express = require('express');
 var multer = require('multer');
-var hostname = 'localhost'; 
-var PORT = process.env.PORT || 3000;
 var cors = require('cors');
 var path = require('path');
+var cloudinary = require('cloudinary');
+var bodyParser = require("body-parser"); 
+var conf = require("./config.json");
 var fs = require('fs');
-//var UPLOAD_PATH = 'uploads';
+var mongoose = require('mongoose'); 
+
+
+
+//configuration cloudinary
+cloudinary.config({
+    cloud_name: conf.cloud_name,
+    api_key: conf.api_key,
+    api_secret: conf.api_secret
+});
+
+var hostname = 'localhost'; 
+var PORT = process.env.PORT || 3000;
+
 var UPLOAD_PATH= path.join(__dirname, 'uploads')
 
-var mongoose = require('mongoose'); 
 var options = {  useNewUrlParser: true , server: { socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 } }, 
 replset: { socketOptions: { keepAlive: 300000, connectTimeoutMS : 30000 } } };
-var conf = require("./config.json");
 var urlmongo = `mongodb://${conf.user}:${conf.mdp}@ds247439.mlab.com:47439/setuprcdb`; 
 
 // Multer Settings for file upload
@@ -26,6 +38,7 @@ var storage = multer.diskStorage({
 
 var upload = multer({ storage: storage })
 
+// DB connection
 mongoose.connect(urlmongo, options);
 
 var db = mongoose.connection; 
@@ -33,9 +46,11 @@ db.on('error', console.error.bind(console, 'Erreur lors de la connexion'));
 db.once('open', function (){
     console.log("Connexion à la base OK"); 
 }); 
+
+//
+
 var app = express(); 
 app.use(cors());
-var bodyParser = require("body-parser"); 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -77,6 +92,7 @@ var imageSchema = new mongoose.Schema({
     originalname: String,
     desc: String,
     piloteId: String,
+    url: String,
     created: { type: Date, default: Date.now }
 });
 
@@ -212,6 +228,13 @@ app.post('/images', upload.single('image'), (req, res, next) => {
     var newImage = new Image();
     newImage.filename = req.file.filename;
     newImage.originalName = req.file.originalname;
+    /*cloudinary.uploader.upload(("uploads/" + newImage.filename), 
+    function(result, error) {
+        console.log("result :" ,result);
+        console.log("error :" ,error);
+        newImage.url = result.url;
+    });*/
+    console.log(newImage);
     newImage.save(err => {
         if (err) {
             return res.sendStatus(400);
@@ -235,23 +258,6 @@ app.get('/images', (req, res, next) => {
             img.url = req.protocol + '://' + req.get('host') + '/images/' + img._id;
         }
         res.json(images);
-    })
-});
-
-app.get('/lastimage', (req, res, next) => {
-    // use lean() to get a plain JS object
-    // remove the version key from the response
-    Image.find({}, '-__v').lean().exec((err, images) => {
-        if (err) {
-            res.sendStatus(400);
-        }
- 
-        // Manually set the correct URL to each image
-        for (let i = 0; i < images.length; i++) {
-            var img = images[i];
-            img.url = req.protocol + '://' + req.get('host') + '/images/' + img._id;
-        }
-        res.json(img);
     })
 });
 
